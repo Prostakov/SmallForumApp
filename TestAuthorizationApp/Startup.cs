@@ -83,6 +83,8 @@ namespace TestAuthorizationApp
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            DefaultUsersInitializer.Initialize(app.ApplicationServices, Configuration.GetValue<string>("DefaultPassword")).GetAwaiter();
         }
     }
 }
