@@ -15,14 +15,14 @@ namespace TestAuthorizationApp.Data
 
         public static async Task Initialize(IServiceProvider serviceProvider, string defaultPassword)
         {
-            var administratorId = await EnsureUser(serviceProvider, Role.Administrator, defaultPassword);
-            await EnsureRole(serviceProvider, administratorId, Role.Administrator);
+            var administratorId = await EnsureUser(serviceProvider, A.Administrator, defaultPassword);
+            await EnsureRole(serviceProvider, administratorId, A.Administrator);
 
-            var managerId = await EnsureUser(serviceProvider, Role.Manager, defaultPassword);
-            await EnsureRole(serviceProvider, managerId, Role.Manager);
+            var managerId = await EnsureUser(serviceProvider, A.Manager, defaultPassword);
+            await EnsureRole(serviceProvider, managerId, A.Manager);
 
-            var moderatorId = await EnsureUser(serviceProvider, Role.Moderator, defaultPassword);
-            await EnsureRole(serviceProvider, moderatorId, Role.Moderator);
+            var moderatorId = await EnsureUser(serviceProvider, A.Moderator, defaultPassword);
+            await EnsureRole(serviceProvider, moderatorId, A.Moderator);
         }
 
         private static async Task<string> EnsureUser(IServiceProvider serviceProvider, string userName, string userPassword)

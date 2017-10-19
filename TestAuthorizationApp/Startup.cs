@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TestAuthorizationApp.Authorization;
 using TestAuthorizationApp.Data;
 using TestAuthorizationApp.Models;
 using TestAuthorizationApp.Services;
@@ -48,6 +45,15 @@ namespace TestAuthorizationApp
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+
+            // Authorization
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(A.Administrator, policy => policy.RequireRole(A.Administrator));
+                options.AddPolicy(A.Manager, policy => policy.RequireRole(A.Administrator, A.Manager));
+                options.AddPolicy(A.Moderator, policy => policy.RequireRole(A.Administrator, A.Manager, A.Moderator));
+                options.AddPolicy(A.User, policy => policy.RequireAuthenticatedUser());
+            });
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
