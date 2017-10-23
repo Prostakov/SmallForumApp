@@ -6,6 +6,11 @@ namespace TestAuthorizationApp.Controllers
 {
     public class TestController : Controller
     {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         [Authorize(Policy = A.Administrator)]
         public IActionResult IndexForAdministrators()
         {
@@ -24,8 +29,8 @@ namespace TestAuthorizationApp.Controllers
             return View();
         }
 
-        [Authorize(Policy = A.User)]
-        public IActionResult IndexForUsers()
+        [Authorize(Policy = A.AuthenticatedUser)]
+        public IActionResult IndexForAuthenticatedUsers()
         {
             return View();
         }

@@ -52,7 +52,7 @@ namespace TestAuthorizationApp
                 options.AddPolicy(A.Administrator, policy => policy.RequireRole(A.Administrator));
                 options.AddPolicy(A.Manager, policy => policy.RequireRole(A.Administrator, A.Manager));
                 options.AddPolicy(A.Moderator, policy => policy.RequireRole(A.Administrator, A.Manager, A.Moderator));
-                options.AddPolicy(A.User, policy => policy.RequireAuthenticatedUser());
+                options.AddPolicy(A.AuthenticatedUser, policy => policy.RequireAuthenticatedUser());
             });
 
             // Add application services.

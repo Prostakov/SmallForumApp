@@ -1,0 +1,28 @@
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+@if (await AuthorizationService.AuthorizeAsync(User, A.Administrator))
+{
+    <p>This paragraph is displayed because you fulfilled Administrator policy.</p>
+}
+
+@if (await AuthorizationService.AuthorizeAsync(User, A.Manager))
+{
+    <p>This paragraph is displayed because you fulfilled Manager policy.</p>
+}
+
+@if (await AuthorizationService.AuthorizeAsync(User, A.Moderator))
+{
+    <p>This paragraph is displayed because you fulfilled Moderator policy.</p>
+}
+
+@if (await AuthorizationService.AuthorizeAsync(User, A.AuthenticatedUser))
+{
+    <p>This paragraph is displayed because you fulfilled AuthenticatedUser policy.</p>
+}
+
+<p>This paragraph is displayed to everyone.</p>

@@ -12,7 +12,7 @@ namespace TestAuthorizationApp.Data
     public class DefaultUsersInitializer
     {
         private static readonly string ErrorMessage = "Error initializing default users!";
-
+        
         public static async Task Initialize(IServiceProvider serviceProvider, string defaultPassword)
         {
             var administratorId = await EnsureUser(serviceProvider, A.Administrator, defaultPassword);
@@ -27,6 +27,8 @@ namespace TestAuthorizationApp.Data
 
         private static async Task<string> EnsureUser(IServiceProvider serviceProvider, string userName, string userPassword)
         {
+            userName = "prostakov+" + userName + "@zoho.com";
+
             var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
 
             var user = await userManager.FindByNameAsync(userName);
