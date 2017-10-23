@@ -11,31 +11,26 @@ namespace TestAuthorizationApp.Controllers
             return View();
         }
 
-        [Authorize(Policy = A.Administrator)]
+        [Authorize(Policy = R.Administrator)]
         public IActionResult IndexForAdministrators()
         {
             return View();
         }
 
-        [Authorize(Policy = A.Manager)]
+        [Authorize(Policy = R.Manager)]
         public IActionResult IndexForManagers()
         {
             return View();
         }
 
-        [Authorize(Policy = A.Moderator)]
+        [Authorize(Policy = R.Moderator)]
         public IActionResult IndexForModerators()
         {
             return View();
         }
 
-        [Authorize(Policy = A.AuthenticatedUser)]
+        [Authorize]
         public IActionResult IndexForAuthenticatedUsers()
-        {
-            return View();
-        }
-        
-        public IActionResult IndexForNotAuthenticatedUsers()
         {
             return View();
         }

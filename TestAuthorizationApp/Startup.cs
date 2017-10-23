@@ -49,10 +49,9 @@ namespace TestAuthorizationApp
             // Authorization
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(A.Administrator, policy => policy.RequireRole(A.Administrator));
-                options.AddPolicy(A.Manager, policy => policy.RequireRole(A.Administrator, A.Manager));
-                options.AddPolicy(A.Moderator, policy => policy.RequireRole(A.Administrator, A.Manager, A.Moderator));
-                options.AddPolicy(A.AuthenticatedUser, policy => policy.RequireAuthenticatedUser());
+                options.AddPolicy(R.Administrator, policy => policy.RequireRole(R.Administrator));
+                options.AddPolicy(R.Manager, policy => policy.RequireRole(R.Administrator, R.Manager));
+                options.AddPolicy(R.Moderator, policy => policy.RequireRole(R.Administrator, R.Manager, R.Moderator));
             });
 
             // Add application services.
