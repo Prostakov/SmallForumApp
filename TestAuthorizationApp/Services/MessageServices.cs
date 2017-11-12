@@ -10,10 +10,16 @@ namespace TestAuthorizationApp.Services
     // For more details see this link https://go.microsoft.com/fwlink/?LinkID=532713
     public class AuthMessageSender : IEmailSender, ISmsSender
     {
+        private readonly EmailService _emailService;
+
+        public AuthMessageSender(EmailService emailService)
+        {
+            _emailService = emailService;
+        }
+
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            return _emailService.SendEmailAsync(email, "", subject, message);
         }
 
         public Task SendSmsAsync(string number, string message)

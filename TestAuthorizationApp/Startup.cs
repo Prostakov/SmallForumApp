@@ -19,7 +19,7 @@ namespace TestAuthorizationApp
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
             if (env.IsDevelopment())
             {
@@ -40,13 +40,22 @@ namespace TestAuthorizationApp
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+                {
+                    config.SignIn.RequireConfirmedEmail = true;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
 
-            // Authorization
+            // Init custom Config class
+            services.Configure<Config>(Configuration);
+
+            // Init email service
+            services.AddSingleton<EmailService>();
+
+            // Init authorization
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(R.Administrator, policy => policy.RequireRole(R.Administrator));
