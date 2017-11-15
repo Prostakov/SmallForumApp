@@ -55,6 +55,9 @@ namespace TestAuthorizationApp
             // Init email service
             services.AddSingleton<EmailService>();
 
+            // Init sms service
+            services.AddSingleton<SmsService>();
+
             // Init authorization
             services.AddAuthorization(options =>
             {

@@ -5,16 +5,15 @@ using System.Threading.Tasks;
 
 namespace TestAuthorizationApp.Services
 {
-    // This class is used by the application to send Email and SMS
-    // when you turn on two-factor authentication in ASP.NET Identity.
-    // For more details see this link https://go.microsoft.com/fwlink/?LinkID=532713
     public class AuthMessageSender : IEmailSender, ISmsSender
     {
         private readonly EmailService _emailService;
+        private readonly SmsService _smsService;
 
-        public AuthMessageSender(EmailService emailService)
+        public AuthMessageSender(EmailService emailService, SmsService smsService)
         {
             _emailService = emailService;
+            _smsService = smsService;
         }
 
         public Task SendEmailAsync(string email, string subject, string message)
@@ -24,8 +23,7 @@ namespace TestAuthorizationApp.Services
 
         public Task SendSmsAsync(string number, string message)
         {
-            // Plug in your SMS service here to send a text message.
-            return Task.FromResult(0);
+            return _smsService.SendSmsAsync(message, number);
         }
     }
 }
