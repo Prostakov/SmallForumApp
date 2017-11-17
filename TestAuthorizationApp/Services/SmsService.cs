@@ -31,7 +31,7 @@ namespace TestAuthorizationApp.Services
             _smsAlphaName = config.Value.SmsService.SmsAlphaName;
         }
 
-        public async Task SendSmsAsync(string message, string recipient)
+        public async Task SendSmsAsync(string recipient, string message)
         {
             var request = CreateRequest();
 
@@ -47,13 +47,13 @@ namespace TestAuthorizationApp.Services
 
         private HttpWebRequest CreateRequest()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_serviceUri);
+            var request = (HttpWebRequest)WebRequest.Create(_serviceUri);
             request.Method = "POST";
             request.ContentType = "text/xml; encoding='utf-8'";
             request.Accept = "text/xml";
 
             // Add header for Http authentication
-            String encodedCredentials = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(_senderLogin + ":" + _senderPassword));
+            var encodedCredentials = Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(_senderLogin + ":" + _senderPassword));
             request.Headers["Authorization"] = "Basic " + encodedCredentials;
 
             return request;
