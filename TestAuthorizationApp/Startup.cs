@@ -51,13 +51,7 @@ namespace TestAuthorizationApp
 
             // Init custom Config class
             services.Configure<Config>(Configuration);
-
-            // Init email service
-            services.AddSingleton<EmailService>();
-
-            // Init sms service
-            services.AddSingleton<SmsService>();
-
+            
             // Init authorization
             services.AddAuthorization(options =>
             {
@@ -66,9 +60,9 @@ namespace TestAuthorizationApp
                 options.AddPolicy(R.Moderator, policy => policy.RequireRole(R.Administrator, R.Manager, R.Moderator));
             });
 
-            // Add application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
+            // Add application services
+            services.AddSingleton<IEmailSender, EmailService>();
+            services.AddSingleton<ISmsSender, SmsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace TestAuthorizationApp.Services
 {
-    public class SmsService
+    public class SmsService : ISmsSender
     {
         private readonly string _serviceUri;
         private readonly string _senderLogin;

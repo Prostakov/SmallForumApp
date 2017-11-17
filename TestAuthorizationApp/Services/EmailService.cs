@@ -7,7 +7,7 @@ using MimeKit;
 
 namespace TestAuthorizationApp.Services
 {
-    public class EmailService
+    public class EmailService : IEmailSender
     {
         private readonly string _emailSenderAddress;
         private readonly string _emailSenderPassword;
@@ -22,8 +22,10 @@ namespace TestAuthorizationApp.Services
             _smtpPort = Convert.ToInt32(config.Value.EmailService.SmtpPort);
         }
 
-        public async Task SendEmailAsync(string to, string toTitle, string subject, string body)
+        public async Task SendEmailAsync(string to, string subject, string body)
         {
+            var toTitle = "";
+
             try
             {
                 var mimeMessage = new MimeMessage();
