@@ -13,6 +13,16 @@ namespace TestAuthorizationApp.Services
         private readonly string _senderPassword;
         private readonly string _smsAlphaName;
 
+        private const string _payloadXmlTemplate = 
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+            "<request>" +
+                "<operation>SENDSMS</operation>" +
+                "<message start_time = \"AUTO\" end_time=\"AUTO\" lifetime=\"4\" rate=\"120\" desc=\"\" source=\"{0}\">" +
+                    "<body>{1}</body>" +
+                    "<recipient>{2}</recipient>" +
+                "</message>" +
+            "</request>";
+
         public SmsService(IOptions<Config> config)
         {
             _serviceUri = config.Value.SmsService.ServiceUri;
@@ -51,17 +61,7 @@ namespace TestAuthorizationApp.Services
 
         private async Task FillRequestPayload(HttpWebRequest request, string message, string recipient)
         {
-            var payload = new StringBuilder();
-            payload.Append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            payload.Append("<request>");
-            payload.Append("<operation>SENDSMS</operation>");
-            payload.Append("<message start_time = \"AUTO\" end_time=\"AUTO\" lifetime=\"4\" rate=\"120\" desc=\"\" source=\"" + _smsAlphaName + "\">");
-            payload.Append("<body>" + message + "</body>");
-            payload.Append("<recipient>" + recipient + "</recipient>");
-            payload.Append("</message>");
-            payload.Append("</request>");
-
-            byte[] payloadByteArray = Encoding.UTF8.GetBytes(payload.ToString());
+            byte[] payloadByteArray = Encoding.UTF8.GetBytes(string.Format(_payloadXmlTemplate, _smsAlphaName, message, recipient));
 
             // Write payload byte array to stream
             using (var stream = await request.GetRequestStreamAsync())
