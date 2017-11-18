@@ -1,68 +1,80 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using TestAuthorizationApp.Authorization;
 using TestAuthorizationApp.Models;
+using TestAuthorizationApp.Services;
 
 namespace TestAuthorizationApp.Data
 {
     public class DefaultUsersInitializer
     {
-        private static readonly string ErrorMessage = "Error initializing default users!";
-        
-        public static async Task Initialize(IServiceProvider serviceProvider, string defaultPassword)
+        private const string _defaultErrorMessage = "Error initializing default users!";
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly string _defaultUsersEmail;
+        private readonly string _defaultUsersPassword;
+
+        public DefaultUsersInitializer(IOptions<Config> config, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-            var administratorId = await EnsureUser(serviceProvider, R.Administrator, defaultPassword);
-            await EnsureRole(serviceProvider, administratorId, R.Administrator);
+            _defaultUsersEmail = config.Value.DefaultUsers.Email;
+            _defaultUsersPassword = config.Value.DefaultUsers.Password;
+            _userManager = userManager;
+            _roleManager = roleManager;
+        }
+        
+        public async Task Initialize()
+        {
+            var administratorId = await EnsureDefaultUser(R.Administrator);
+            await EnsureRole(administratorId, R.Administrator);
 
-            var managerId = await EnsureUser(serviceProvider, R.Manager, defaultPassword);
-            await EnsureRole(serviceProvider, managerId, R.Manager);
+            var managerId = await EnsureDefaultUser(R.Manager);
+            await EnsureRole(managerId, R.Manager);
 
-            var moderatorId = await EnsureUser(serviceProvider, R.Moderator, defaultPassword);
-            await EnsureRole(serviceProvider, moderatorId, R.Moderator);
+            var moderatorId = await EnsureDefaultUser(R.Moderator);
+            await EnsureRole(moderatorId, R.Moderator);
         }
 
-        private static async Task<string> EnsureUser(IServiceProvider serviceProvider, string userName, string userPassword)
+        private async Task<string> EnsureDefaultUser(string userRole)
         {
-            userName = "prostakov+" + userName + "@zoho.com";
+            var userName = _defaultUsersEmail.Split('@')[0] + "+" + userRole.ToLower() + "@" +
+                       _defaultUsersEmail.Split('@')[1];
 
-            var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
-
-            var user = await userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {
-                user = new ApplicationUser { UserName = userName };
-                var result = await userManager.CreateAsync(user, userPassword);
+                user = new ApplicationUser
+                {
+                    UserName = userName,
+                    Email = userName,
+                    EmailConfirmed = true
+                };
+                var result = await _userManager.CreateAsync(user, _defaultUsersPassword);
 
-                if (!result.Succeeded) throw new Exception(ErrorMessage);
+                if (!result.Succeeded) throw new Exception(_defaultErrorMessage);
             }
 
             return user.Id;
         }
 
-        private static async Task EnsureRole(IServiceProvider serviceProvider, string id, string role)
+        private async Task EnsureRole(string id, string role)
         {
             IdentityResult result = null;
 
-            var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
-
-            if (!await roleManager.RoleExistsAsync(role))
+            if (!await _roleManager.RoleExistsAsync(role))
             {
-                result = await roleManager.CreateAsync(new IdentityRole(role));
+                result = await _roleManager.CreateAsync(new IdentityRole(role));
 
-                if (!result.Succeeded) throw new Exception(ErrorMessage);
+                if (!result.Succeeded) throw new Exception(_defaultErrorMessage);
             }
 
-            var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+            var user = await _userManager.FindByIdAsync(id);
 
-            var user = await userManager.FindByIdAsync(id);
+            result = await _userManager.AddToRoleAsync(user, role);
 
-            result = await userManager.AddToRoleAsync(user, role);
-
-            if (!result.Succeeded) throw new Exception(ErrorMessage);
+            if (!result.Succeeded) throw new Exception(_defaultErrorMessage);
         }
     }
 }

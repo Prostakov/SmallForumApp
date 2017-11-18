@@ -2,6 +2,12 @@
 {
     public class Config
     {
+        public struct DefaultUsersInfo
+        {
+            public string Email { get; set; }
+            public string Password { get; set; }
+        }
+
         public struct EmailServiceInfo
         {
             public string SmtpServer { get; set; }
@@ -21,5 +27,7 @@
         public EmailServiceInfo EmailService { get; set; }
 
         public SmsServiceInfo SmsService { get; set; }
+
+        public DefaultUsersInfo DefaultUsers { get; set; }
     }
 }

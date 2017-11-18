@@ -20,13 +20,7 @@ namespace TestAuthorizationApp
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets<Startup>();
-            }
-
+            
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -61,12 +55,13 @@ namespace TestAuthorizationApp
             });
 
             // Add application services
+            services.AddSingleton<DefaultUsersInitializer>();
             services.AddSingleton<IEmailSender, EmailService>();
             services.AddSingleton<ISmsSender, SmsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, DefaultUsersInitializer defaultUsersInitializer)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -94,8 +89,8 @@ namespace TestAuthorizationApp
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            DefaultUsersInitializer.Initialize(app.ApplicationServices, Configuration.GetValue<string>("DefaultPassword")).GetAwaiter();
+            
+            defaultUsersInitializer.Initialize().GetAwaiter();
         }
     }
 }
