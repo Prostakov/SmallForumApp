@@ -43,8 +43,16 @@ namespace TestAuthorizationApp
 
             services.AddMvc();
 
-            // Init custom Config class
-            services.Configure<Config>(Configuration);
+            // Configure Identity
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            });
             
             // Init authorization
             services.AddAuthorization(options =>
@@ -56,6 +64,7 @@ namespace TestAuthorizationApp
 
             // Add application services
             services.AddSingleton<DefaultUsersInitializer>();
+            services.Configure<Config>(Configuration);
             services.AddSingleton<IEmailSender, EmailService>();
             services.AddSingleton<ISmsSender, SmsService>();
         }
