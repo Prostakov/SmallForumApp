@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -61,6 +62,7 @@ namespace TestAuthorizationApp
                 options.AddPolicy(R.Manager, policy => policy.RequireRole(R.Administrator, R.Manager));
                 options.AddPolicy(R.Moderator, policy => policy.RequireRole(R.Administrator, R.Manager, R.Moderator));
             });
+            services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandler>();
 
             // Add application services
             services.AddSingleton<DefaultUsersInitializer>();

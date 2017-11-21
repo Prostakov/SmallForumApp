@@ -1,3 +1,6 @@
+@using Microsoft.AspNetCore.Authorization.Infrastructure
+@inject IAuthorizationService AuthorizationService
+
 
 @{
     ViewData["Title"] = "Index";
@@ -14,6 +17,7 @@
                 <th class="hidden-xs">ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Role</th>
                 <th></th>
             </tr>
         </thead>
@@ -21,15 +25,18 @@
         
             @foreach (ApplicationUser user in ViewBag.Users)
             {
-                <tr>
-                    <td class="hidden-xs">1</td>
-                    <td>John Doe</td>
-                    <td>@user.Email</td>
-                    <td>
-                        <a class="btn btn-xs btn-default glyphicon glyphicon-pencil"></a>
-                        <a class="btn btn-xs btn-danger glyphicon glyphicon-apple"></a>
-                    </td>
-                </tr>
+                if (await AuthorizationService.AuthorizeAsync(User, user, new OperationAuthorizationRequirement()))
+                {
+                    <tr>
+                        <td class="hidden-xs"></td>
+                        <td>John Doe</td>
+                        <td>@user.Email</td>
+                        <td>@user.Role</td>
+                        <td>
+                            <a class="btn btn-xs btn-default glyphicon glyphicon-pencil"></a>
+                        </td>
+                    </tr>
+                }
             }
 
         </tbody>
