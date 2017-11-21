@@ -62,7 +62,7 @@ namespace TestAuthorizationApp
                 options.AddPolicy(R.Manager, policy => policy.RequireRole(R.Administrator, R.Manager));
                 options.AddPolicy(R.Moderator, policy => policy.RequireRole(R.Administrator, R.Manager, R.Moderator));
             });
-            services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, UserAccessAuthorizationHandler>();
 
             // Add application services
             services.AddSingleton<DefaultUsersInitializer>();

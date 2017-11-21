@@ -10,13 +10,13 @@ using TestAuthorizationApp.Models;
 
 namespace TestAuthorizationApp.Authorization
 {
-    public class UserAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, ApplicationUser>
+    public class UserAccessAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, ApplicationUser>
     {
         private readonly string _administratorRoleId;
         private readonly string _managerRoleId;
         private readonly string _moderatorRoleId;
 
-        public UserAuthorizationHandler(RoleManager<IdentityRole> roleManager)
+        public UserAccessAuthorizationHandler(RoleManager<IdentityRole> roleManager)
         {
             var roles = roleManager.Roles.ToList();
             _administratorRoleId = roles.First(r => r.Name == R.Administrator).Id;
@@ -40,7 +40,7 @@ namespace TestAuthorizationApp.Authorization
             // Managers see only moderators and simple users
             if (context.User.IsInRole(R.Manager))
             {
-                if (user.Roles.All(r => r.RoleId != _administratorRoleId && r.RoleId != _managerRoleId))
+                if (user.Roles.All(r => r.RoleId != _administratorRoleId))
                 {
                     context.Succeed(requirement);
                 }
@@ -49,7 +49,7 @@ namespace TestAuthorizationApp.Authorization
             // Moderators see only simple users
             if (context.User.IsInRole(R.Moderator))
             {
-                if (user.Roles.All(r => r.RoleId != _administratorRoleId && r.RoleId != _managerRoleId && r.RoleId != _moderatorRoleId))
+                if (user.Roles.All(r => r.RoleId != _administratorRoleId && r.RoleId != _managerRoleId))
                 {
                     context.Succeed(requirement);
                 }
