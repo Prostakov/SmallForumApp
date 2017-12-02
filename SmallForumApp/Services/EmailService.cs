@@ -29,7 +29,7 @@ namespace SmallForumApp.Services
             try
             {
                 var mimeMessage = new MimeMessage();
-                mimeMessage.From.Add(new MailboxAddress("TestAuthorizationApp", _emailSenderAddress));
+                mimeMessage.From.Add(new MailboxAddress("SmallForumApp", _emailSenderAddress));
                 mimeMessage.To.Add(new MailboxAddress(toTitle, to));
                 mimeMessage.Subject = subject;
                 mimeMessage.Body = new TextPart("plain") { Text = body };
