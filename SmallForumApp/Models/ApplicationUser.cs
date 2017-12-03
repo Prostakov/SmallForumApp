@@ -12,5 +12,7 @@ namespace SmallForumApp.Models
     {
         [NotMapped]
         public string Role { get; set; }
+
+        public ICollection<Post> Posts { get; set; }
     }
 }
