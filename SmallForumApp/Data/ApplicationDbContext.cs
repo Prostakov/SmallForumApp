@@ -21,6 +21,7 @@ namespace SmallForumApp.Data
             base.OnModelCreating(builder);
 
             new PostConfiguration(builder.Entity<Post>());
+            new TestModelConfiguration(builder.Entity<TestModel>());
         }
     }
 }
