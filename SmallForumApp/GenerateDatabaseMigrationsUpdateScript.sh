@@ -1,1 +1,1 @@
-﻿dotnet ef migrations script --idempotent --output $0
+﻿dotnet ef migrations script --idempotent --output $0/$1/UpdateDatabase.sql
