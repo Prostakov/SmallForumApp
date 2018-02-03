@@ -1,1 +1,1 @@
-﻿dotnet ef migrations script --idempotent --output $(build.artifactstagingdirectory)
+﻿dotnet ef migrations script --idempotent --output $0
